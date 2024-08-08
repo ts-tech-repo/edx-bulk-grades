@@ -71,6 +71,7 @@ def _get_enrollments(course_id, track=None, cohort=None, active_only=False, excl
             'user_id': enrollment.user.id,
             'username': enrollment.user.username,
             'full_name': enrollment.user.profile.name,
+            'email': enrollment.user.email,
             'enrolled': enrollment.is_active,
             'track': enrollment.mode,
         }
@@ -285,7 +286,7 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
         Create GradeCSVProcessor.
         """
         # First, set some default values.
-        self.columns = ['user_id', 'username', 'student_key', 'course_id', 'track', 'cohort']
+        self.columns = ['user_id', 'username', 'student_key', 'full_name', 'email', 'course_id', 'track', 'cohort']
         self.course_id = None
         self.subsection_grade_max = None
         self.subsection_grade_min = None
@@ -428,6 +429,8 @@ class GradeCSVProcessor(DeferrableMixin, GradedSubsectionMixin, CSVProcessor):
                 'user_id': enrollment['user_id'],
                 'username': enrollment['username'],
                 'student_key': enrollment['student_uid'] if enrollment['track'] == 'masters' else None,
+                'full_name': enrollment['full_name'],
+                'email': enrollment['email'],
                 'track': enrollment['track'],
                 'course_id': self.course_id,
                 'cohort': cohort.name if cohort else None,
